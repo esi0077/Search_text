@@ -1,83 +1,114 @@
+import customtkinter as ctk
 import colorama
+
 colorama.init()
 
-def read_file(file_name):
+def lesInnTekst(file_name):
     try:
         with open(file_name, 'r', encoding='utf-8') as file:
             return file.readlines()
     except FileNotFoundError:
-        print(colorama.Fore.RED, f"The file '{file_name}' was not found. Please ensure the file name is correct.")
         return []
 
-def count_words(lines):
+def ord_teller(lines):
     word_count = 0
     for line in lines:
         word_count += len(line.split())
     return word_count
 
-def search_word(lines, word):
+def sok_ord(lines, word):
     results = []
     word_count = 0
     for line_number, line in enumerate(lines, start=1):
-        if word.lower() in line.lower(): 
+        if word.lower() in line.lower():  
             results.append((line_number, line.strip()))
             word_count += line.lower().split().count(word.lower())
     return results, word_count
 
-def display_results(results, word, word_count, total_words):
+def printTekst(results, word, word_count, total_words, result_text_widget):
+    result_text_widget.delete(1.0, "end") 
+
     if results:
         percentage = (word_count / total_words) * 100 if total_words > 0 else 0
-        print(colorama.Fore.GREEN, f"\nSearch results for the word '{colorama.Fore.RED}{word}{colorama.Fore.GREEN}':")
+
+        result_text = f"\nSøkeresultater for ordet '{word}':\n"
+
         for line_number, line in results:
-            print(f"{colorama.Fore.GREEN}Line {line_number}: {colorama.Fore.RED}{line}{colorama.Fore.RESET}")
-        print(colorama.Fore.YELLOW, f"\nThe word '{colorama.Fore.RED}{word}{colorama.Fore.YELLOW}' makes up {colorama.Fore.GREEN}{percentage:.2f}%{colorama.Fore.YELLOW} of the text.")
+            result_text += f"Linje {line_number}: {line}\n"
+
+        result_text += f"\nOrdet '{word}' utgjør {percentage:.2f}% av teksten."
+
+        result_text += f"\n\n ( ͡❛ ͜ʖ ͡❛) 𝔱𝔥𝔞𝔫𝔨𝔰 𝔣𝔬𝔯 𝔲𝔰𝔦𝔫𝔤 𝔱𝔥𝔦𝔰 𝔞𝔭𝔭 ©̲𝟮𝟬𝟮𝟰"
+
+        result_text_widget.insert("end", result_text)
     else:
-        print(colorama.Fore.RED, f"\nNo matches found for the word '{word}'.")
+        result_text_widget.insert("end", f"\nIngen treff funnet for ordet '{word}'.\n")
+
+    result_text_widget.yview("end") 
+
+def sok_pa_klikk(file_name, word, result_text_widget):
+    lines = lesInnTekst(file_name)
+    if not lines:
+        result_text_widget.insert("end", "Filen eksisterer ikke eller er tom.\n")
+        return
+
+    total_words = ord_teller(lines)
+    if total_words == 0:
+        result_text_widget.insert("end", "Filen er tom.\n")
+        return
+
+    results, word_count = sok_ord(lines, word)
+    printTekst(results, word, word_count, total_words, result_text_widget)
+
+def av(window):
+    window.quit()
 
 def main():
-    a = """
-░██╗░░░░░░░██╗███████╗██╗░░░░░░█████╗░░█████╗░███╗░░░███╗███████╗  ████████╗░█████╗░  ████████╗██╗░░██╗███████╗
-░██║░░██╗░░██║██╔════╝██║░░░░░██╔══██╗██╔══██╗████╗░████║██╔════╝  ╚══██╔══╝██╔══██╗  ╚══██╔══╝██║░░██║██╔════╝
-░╚██╗████╗██╔╝█████╗░░██║░░░░░██║░░╚═╝██║░░██║██╔████╔██║█████╗░░  ░░░██║░░░██║░░██║  ░░░██║░░░███████║█████╗░░
-░░████╔═████║░██╔══╝░░██║░░░░░██║░░██╗██║░░██║██║╚██╔╝██║██╔══╝░░  ░░░██║░░░██║░░██║  ░░░██║░░░██╔══██║██╔══╝░░
-░░╚██╔╝░╚██╔╝░███████╗███████╗╚█████╔╝╚█████╔╝██║░╚═╝░██║███████╗  ░░░██║░░░╚█████╔╝  ░░░██║░░░██║░░██║███████╗
-░░░╚═╝░░░╚═╝░░╚══════╝╚══════╝░╚════╝░░╚════╝░╚═╝░░░░░╚═╝╚══════╝  ░░░╚═╝░░░░╚════╝░  ░░░╚═╝░░░╚═╝░░╚═╝╚══════╝
+    ctk.set_appearance_mode("dark") 
+    ctk.set_default_color_theme("dark-blue")
+    window = ctk.CTk()  
+    window.title("Verktøy for tekstsøk")
+    window.geometry("700x550")
+    window.resizable(False, False)  
+    window.configure(bg='black')
 
-░█████╗░██████╗░███╗░░░███╗██╗███╗░░██╗  ░██████╗███████╗░█████╗░██████╗░░█████╗░██╗░░██╗
-██╔══██╗██╔══██╗████╗░████║██║████╗░██║  ██╔════╝██╔════╝██╔══██╗██╔══██╗██╔══██╗██║░░██║
-███████║██████╔╝██╔████╔██║██║██╔██╗██║  ╚█████╗░█████╗░░███████║██████╔╝██║░░╚═╝███████║
-██╔══██║██╔══██╗██║╚██╔╝██║██║██║╚████║  ░╚═══██╗██╔══╝░░██╔══██║██╔══██╗██║░░██╗██╔══██║
-██║░░██║██║░░██║██║░╚═╝░██║██║██║░╚███║  ██████╔╝███████╗██║░░██║██║░░██║╚█████╔╝██║░░██║
-╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░░░╚═╝╚═╝╚═╝░░╚══╝  ╚═════╝░╚══════╝╚═╝░░╚═╝╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝
 
-███████╗███╗░░██╗░██████╗░██╗███╗░░██╗███████╗██╗
-██╔════╝████╗░██║██╔════╝░██║████╗░██║██╔════╝██║
-█████╗░░██╔██╗██║██║░░██╗░██║██╔██╗██║█████╗░░██║
-██╔══╝░░██║╚████║██║░░╚██╗██║██║╚████║██╔══╝░░╚═╝
-███████╗██║░╚███║╚██████╔╝██║██║░╚███║███████╗██╗
-╚══════╝╚═╝░░╚══╝░╚═════╝░╚═╝╚═╝░░╚══╝╚══════╝╚═╝"""
-    print(colorama.Fore.LIGHTBLUE_EX, a)
-    file_name = input("Enter the name of the text file to search: ")
-    
-    lines = read_file(file_name)
-    if not lines:
-        print(colorama.Fore.RED, "There is nothing here :(")
-        return
-    
-    total_words = count_words(lines)
-    if total_words == 0:
-        print(colorama.Fore.RED, "The file is empty.")
-        return
-    
-    while True:
-        word = input("\nEnter the word to search for or 'exit' to quit: ")
-        if word.lower() == "exit":
-            print(colorama.Fore.GREEN, "Exiting the program. Have a great day!")
-            return
-        
-        results, word_count = search_word(lines, word)
-        display_results(results, word, word_count, total_words)
+    title_label = ctk.CTkLabel(window, text="Søk i din tekst", font=("Arial", 24, "bold"), text_color="white")
+    title_label.pack(pady=20)
 
-# Run the main program
+
+    file_frame = ctk.CTkFrame(window)
+    file_frame.pack(pady=10)
+
+    file_label = ctk.CTkLabel(file_frame, text="Filnavn:", font=("Arial", 14), text_color="white" )
+    file_label.pack(side="left", padx=10)
+
+
+    file_entry = ctk.CTkEntry(file_frame, width=300, font=("Arial", 14), placeholder_text="filnavn", corner_radius=10, fg_color="transparent", text_color="white", border_width=0)
+    file_entry.pack(side="left")
+
+    word_frame = ctk.CTkFrame(window)
+    word_frame.pack(pady=10)
+
+    word_label = ctk.CTkLabel(word_frame, text="Ord å søke etter:", font=("Arial", 14), text_color="white" )
+    word_label.pack(side="left", padx=10)
+
+    word_entry = ctk.CTkEntry(word_frame, width=300, font=("Arial", 14), placeholder_text="søk etter ord", corner_radius=10, fg_color="transparent", text_color="white", border_width=0)
+    word_entry.pack(side="left")
+
+    button_frame = ctk.CTkFrame(window)
+    button_frame.pack(pady=20)
+
+    search_button = ctk.CTkButton(button_frame, text="Søk", font=("Arial", 14, "bold"), height=40, width=150, corner_radius=10, fg_color="#0066cc", text_color="white", border_width=0, command=lambda: sok_pa_klikk(file_entry.get(), word_entry.get(), result_text_widget))
+    search_button.pack(side="left", padx=20)
+
+    exit_button = ctk.CTkButton(button_frame, text="Avslutt", font=("Arial", 14, "bold"), height=40, width=150, corner_radius=10, fg_color="#cc0000", text_color="white", border_width=0, command=lambda: av(window))
+    exit_button.pack(side="left")
+
+    result_text_widget = ctk.CTkTextbox(window, height=200, width=600, font=("Arial", 14), corner_radius=10, text_color="white", border_width=0, state="normal")
+    result_text_widget.pack(pady=10)
+    
+    window.mainloop()
+
 if __name__ == "__main__":
     main()
