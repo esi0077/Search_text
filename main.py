@@ -9,11 +9,16 @@
 # email : armines765@gmail.com
 # website : esi0077.github.io 
 
+
+# customtkinter for gui 
+# colorama for colors = used in last version not in gui version
+
 import customtkinter as ctk
 import colorama
 
 colorama.init()
 
+# lese inn tekst = reading the text file using utf-8
 def lesInnTekst(file_name):
     try:
         with open(file_name, 'r', encoding='utf-8') as file:
@@ -21,11 +26,15 @@ def lesInnTekst(file_name):
     except FileNotFoundError:
         return []
 
+# ord teller = counting how many words it find from the search
+
 def ord_teller(lines):
     word_count = 0
     for line in lines:
         word_count += len(line.split())
     return word_count
+
+# søk ord = searching for the word  
 
 def sok_ord(lines, word):
     results = []
@@ -35,6 +44,8 @@ def sok_ord(lines, word):
             results.append((line_number, line.strip()))
             word_count += line.lower().split().count(word.lower())
     return results, word_count
+
+# print tekst  = printing the text after finding it - result going to print from this function
 
 def printTekst(results, word, word_count, total_words, result_text_widget):
     result_text_widget.delete(1.0, "end") 
@@ -57,6 +68,8 @@ def printTekst(results, word, word_count, total_words, result_text_widget):
 
     result_text_widget.yview("end") 
 
+# søk på klikk = search on click - search field for clicking on søk/search
+
 def sok_pa_klikk(file_name, word, result_text_widget):
     lines = lesInnTekst(file_name)
     if not lines:
@@ -71,8 +84,12 @@ def sok_pa_klikk(file_name, word, result_text_widget):
     results, word_count = sok_ord(lines, word)
     printTekst(results, word, word_count, total_words, result_text_widget)
 
+# av for avslutte = off button for closing the app
+
 def av(window):
     window.quit()
+
+# main app gui (custom tkinter)
 
 def main():
     ctk.set_appearance_mode("dark") 
