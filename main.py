@@ -12,9 +12,11 @@
 
 # customtkinter for gui 
 # colorama for colors = used in last version not in gui version
+# Import for file browsing by filedialog 
 
 import customtkinter as ctk
 import colorama
+from tkinter import filedialog  
 
 colorama.init()
 
@@ -25,6 +27,16 @@ def lesInnTekst(file_name):
             return file.readlines()
     except FileNotFoundError:
         return []
+
+# bla gjennom fil = search in files (brows files)
+
+def blaGjennomFil(file_entry):
+    file_path = filedialog.askopenfilename(
+        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
+    )
+    if file_path:
+        file_entry.delete(0, "end")
+        file_entry.insert(0, file_path)
 
 # ord teller = counting how many words it find from the search
 
@@ -89,36 +101,42 @@ def sok_pa_klikk(file_name, word, result_text_widget):
 def av(window):
     window.quit()
 
+def search_on_enter(event=None, file_entry=None, word_entry=None, result_text_widget=None):
+    sok_pa_klikk(file_entry.get(), word_entry.get(), result_text_widget)
+
 # main app gui (custom tkinter)
 
 def main():
     ctk.set_appearance_mode("dark") 
     ctk.set_default_color_theme("dark-blue")
     window = ctk.CTk()  
-    window.title("Verktøy for tekstsøk")
+    window.title("tekstsøk")
     window.geometry("700x550")
     window.resizable(False, False)  
     window.configure(bg='black')
+    window.bind("<Return>", lambda event: search_on_enter(event, file_entry, word_entry, result_text_widget))
 
+    
 
     title_label = ctk.CTkLabel(window, text="Søk i din tekst", font=("Arial", 24, "bold"), text_color="white")
     title_label.pack(pady=20)
 
-
     file_frame = ctk.CTkFrame(window)
     file_frame.pack(pady=10)
 
-    file_label = ctk.CTkLabel(file_frame, text="Filnavn:", font=("Arial", 14), text_color="white" )
+    file_label = ctk.CTkLabel(file_frame, text="Filnavn:", font=("Arial", 14), text_color="white")
     file_label.pack(side="left", padx=10)
-
 
     file_entry = ctk.CTkEntry(file_frame, width=300, font=("Arial", 14), placeholder_text="filnavn", corner_radius=10, fg_color="transparent", text_color="white", border_width=0)
     file_entry.pack(side="left")
 
+    browse_button = ctk.CTkButton(file_frame, text="Bla gjennom", font=("Arial", 12, "bold"), height=40, width=120, corner_radius=10, fg_color="#009933", text_color="white", border_width=0, command=lambda: blaGjennomFil(file_entry))
+    browse_button.pack(side="left", padx=10)
+
     word_frame = ctk.CTkFrame(window)
     word_frame.pack(pady=10)
 
-    word_label = ctk.CTkLabel(word_frame, text="Ord å søke etter:", font=("Arial", 14), text_color="white" )
+    word_label = ctk.CTkLabel(word_frame, text="Ord å søke etter:", font=("Arial", 14), text_color="white")
     word_label.pack(side="left", padx=10)
 
     word_entry = ctk.CTkEntry(word_frame, width=300, font=("Arial", 14), placeholder_text="søk etter ord", corner_radius=10, fg_color="transparent", text_color="white", border_width=0)
@@ -135,8 +153,9 @@ def main():
 
     result_text_widget = ctk.CTkTextbox(window, height=200, width=600, font=("Arial", 14), corner_radius=10, text_color="white", border_width=0, state="normal")
     result_text_widget.pack(pady=10)
-    
+
     window.mainloop()
+
 
 if __name__ == "__main__":
     main()
