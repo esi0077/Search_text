@@ -19,6 +19,11 @@ the app going to pop up!
 
 you need to have your .text file inside the same folder as script
 
+#### ⬆️ Update v1.1
+
+now you can brows files so you dont need to have your text inside the same folder!
+
+
 
 #### 📂 Folder Structure 
 
