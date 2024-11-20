@@ -1,6 +1,10 @@
 # Search your file and find text inside it 
 <hr>
 
+#### 🟢 A Good Project to Start Python
+
+If you are looking for a project to start learning Python, you can try this one!
+
 #### How to use❓
 
 open cmd and type this:
