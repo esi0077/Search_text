@@ -29,17 +29,19 @@ def lesInnTekst(file_name):
         return []
 
 # bla gjennom fil = search in files (brows files)
-
+# using filedialog in tk to browes file it only search for txt files and if its another type you get an error
 def blaGjennomFil(file_entry):
     file_path = filedialog.askopenfilename(
         filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
     )
     if file_path:
+        # if file path dosent exist app will end the session
         file_entry.delete(0, "end")
         file_entry.insert(0, file_path)
 
 # ord teller = counting how many words it find from the search
-
+# counting the words by using a for loop so in each line it find the word and return a word count 
+# each time it find word in line the count going to go up by 1 as i wrote += 
 def ord_teller(lines):
     word_count = 0
     for line in lines:
@@ -47,7 +49,11 @@ def ord_teller(lines):
     return word_count
 
 # søk ord = searching for the word  
-
+# searching for the word by using a result arry 
+# it going to use the word_count from ord_teller function 
+# it got a loop that going to find the line number (starts from 1 *we dont have line 0 XD*)
+# if the word is in that line it going to append it in the result (write it in result)
+# returning the result and amount
 def sok_ord(lines, word):
     results = []
     word_count = 0
@@ -58,7 +64,11 @@ def sok_ord(lines, word):
     return results, word_count
 
 # print tekst  = printing the text after finding it - result going to print from this function
-
+# getting the result , word and etc from returns and going to use them for printing
+# used result text (tk function that can help us printing the result in a text box)
+# printing back to back by using += that make the text back to back 
+# using /n to line up results (it skip one line and type)
+# if it dosent find any word then its going to print the "else" and end the search
 def printTekst(results, word, word_count, total_words, result_text_widget):
     result_text_widget.delete(1.0, "end") 
 
@@ -81,7 +91,11 @@ def printTekst(results, word, word_count, total_words, result_text_widget):
     result_text_widget.yview("end") 
 
 # søk på klikk = search on click - search field for clicking on søk/search
-
+# working with ui the function going to run on button click 
+# using tk buttons and give this function to it 
+# if your file dose not have any lines then you get an error 
+# if python file dose not found the file then you get another reeor 
+# if it exist then it print your result
 def sok_pa_klikk(file_name, word, result_text_widget):
     lines = lesInnTekst(file_name)
     if not lines:
@@ -97,26 +111,38 @@ def sok_pa_klikk(file_name, word, result_text_widget):
     printTekst(results, word, word_count, total_words, result_text_widget)
 
 # av for avslutte = off button for closing the app
-
+# just for closing the app, it using the window.quit that is a function in ctk/tk
 def av(window):
     window.quit()
 
+# if you click on enter then it will search for you 
+# it helps the user to search as fast as they can 
+# you dont need to use your mouse that much
 def search_on_enter(event=None, file_entry=None, word_entry=None, result_text_widget=None):
     sok_pa_klikk(file_entry.get(), word_entry.get(), result_text_widget)
 
 # main app gui (custom tkinter)
-
+# the gui functions are not har you can just read docs file of the customtk
+# CTK website : https://customtkinter.tomschimansky.com/documentation/
 def main():
+    # using dark mode
     ctk.set_appearance_mode("dark") 
+    # using the main color as dark-blue
     ctk.set_default_color_theme("dark-blue")
+    # define the ctk with ver window
     window = ctk.CTk()  
+    # the title
     window.title("tekstsøk")
+    # size of window
     window.geometry("700x550")
+    # can person resize it ?
     window.resizable(False, False)  
+    # background color
     window.configure(bg='black')
+    # binding using enter function
     window.bind("<Return>", lambda event: search_on_enter(event, file_entry, word_entry, result_text_widget))
 
-    
+    # ---------------------  Buttons and actions --------------------------- #
 
     title_label = ctk.CTkLabel(window, text="Søk i din tekst", font=("Arial", 24, "bold"), text_color="white")
     title_label.pack(pady=20)
@@ -156,6 +182,7 @@ def main():
 
     window.mainloop()
 
+# runing the main app 
 
 if __name__ == "__main__":
     main()

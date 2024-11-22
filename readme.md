@@ -5,6 +5,8 @@
 
 If you are looking for a project to start learning Python, you can try this one!
 
+Code has been commented so you can understand it super easily.
+
 #### How to use❓
 
 open cmd and type this:
