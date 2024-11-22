@@ -12,6 +12,12 @@ Code has been commented so you can understand it super easily.
 open cmd and type this:
 
 ```bash
+pip install tkinter
+
+pip install customtkinter
+
+pip install colorama
+
 python main.py
 ```
 
